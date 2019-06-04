@@ -9,7 +9,7 @@ import OktaSignIn from '@okta/okta-signin-widget'
 import '@okta/okta-signin-widget/dist/css/okta-sign-in.min.css'
 import '@okta/okta-signin-widget/dist/css/okta-theme.css'
 import authConfig from '../.config.js'
-
+import AuthJS from '@okta/okta-auth-js'
 
 export default {
   name: 'Login',
@@ -27,15 +27,30 @@ export default {
         }
       })
 
-      this.widget.renderEl(
-        { el: '#okta-signin-container' },
-        () => {
+      this.widget.session.get((res)=> {
+        if (res.status === 'ACTIVE') {
+          const authClient = new AuthJS({
+            url: authConfig.oidc.issuer.split('/oauth2')[0],
+            issuer: authConfig.oidc.issuer,
+            clientId: authConfig.oidc.client_id,
+            redirectUri: authConfig.oidc.redirect_uri
+          })
+          authClient.token.getWithRedirect({
+            responseType: ['id_token', 'token'],
+            scopes: authConfig.oidc.scope.split(' ')
+          })
+        } else {
+          this.widget.renderEl(
+            { el: '#okta-signin-container' },
+            () => {
 
-        },
-        (err) => {
-          throw err
+            },
+            (err) => {
+              throw err
+            }
+          )
         }
-      )
+      })
     })
   },
   destroyed () {

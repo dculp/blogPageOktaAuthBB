@@ -24,20 +24,7 @@
           v-on:click.native="logout()"
         >
         Logout
-        </router-link>
-        <!-- <router-link
-          to="/users"
-          class="item"
-          id="messages-button"
-          v-if="authenticated"
-        >
-          <i
-            aria-hidden="true"
-            class="mail outline icon"
-          >
-          </i>
-          List Users
-        </router-link>  -->       
+        </router-link>   
       </div>
     </div>
     <div
